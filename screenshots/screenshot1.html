@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetaScan — Screenshot Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0f1a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 40px;
+  }
+  .browser-chrome {
+    width: 860px;
+    background: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  }
+  .browser-bar {
+    background: #16161e;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots span { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+  .browser-url {
+    flex: 1;
+    background: #0f0f1a;
+    border-radius: 8px;
+    padding: 6px 14px;
+    color: #8888a0;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ext-icon {
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: white; font-weight: bold;
+  }
+  .page-bg {
+    background: #ffffff;
+    padding: 20px 30px;
+    position: relative;
+    min-height: 300px;
+  }
+  .page-bg h1 { color: #1a1a2e; font-size: 20px; margin-bottom: 6px; }
+  .page-bg p { color: #666; font-size: 13px; line-height: 1.5; }
+  /* Extension Popup */
+  .ext-popup {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 400px;
+    max-height: 520px;
+    background: #1e1e2e;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+    overflow: hidden;
+    animation: popIn 0.2s ease-out;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .popup-header {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .popup-header .icon {
+    width: 26px; height: 26px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .popup-header .title {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .popup-header .upgrade-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tabs {
+    display: flex;
+    background: #16161e;
+    border-bottom: 1px solid #2a2a3c;
+  }
+  .tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    color: #f59e0b;
+    border-bottom-color: #f59e0b;
+  }
+  .tab:hover { color: #aaa; }
+  .popup-body {
+    padding: 14px 16px;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+  .popup-body::-webkit-scrollbar { width: 4px; }
+  .popup-body::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .meta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #16161e;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    border-left: 3px solid transparent;
+  }
+  .meta-item.ok { border-left-color: #22c55e; }
+  .meta-item.warn { border-left-color: #f59e0b; }
+  .meta-item.error { border-left-color: #ef4444; }
+  .meta-item .status { font-size: 12px; margin-top: 1px; }
+  .meta-item .content { flex: 1; }
+  .meta-item .label {
+    font-size: 10px;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .meta-item .value {
+    font-size: 12px;
+    color: #e4e4e7;
+    margin-top: 2px;
+    line-height: 1.4;
+    word-break: break-all;
+  }
+  .meta-item .value.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+  }
+  .char-count {
+    font-size: 10px;
+    color: #666;
+    margin-top: 2px;
+  }
+  .char-count.warn { color: #f59e0b; }
+  .char-count.error { color: #ef4444; }
+  .issue-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .issue-badge.error { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .issue-badge.warn { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .issues-list { margin-top: 10px; }
+  .social-preview {
+    background: #16161e;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .social-preview .platform {
+    font-size: 10px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .social-card {
+    background: #0f0f1a;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #2a2a3c;
+  }
+  .social-card .card-image {
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+  }
+  .social-card .card-body { padding: 10px; }
+  .social-card .card-domain {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .social-card .card-title {
+    font-size: 13px;
+    color: #e4e4e7;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .social-card .card-desc {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+<div class="browser-chrome">
+  <div class="browser-bar">
+    <div class="browser-dots">
+      <span class="dot-red"></span>
+      <span class="dot-yellow"></span>
+      <span class="dot-green"></span>
+    </div>
+    <div class="browser-url">
+      <span>🔒</span>
+      <span>stripe.com/docs/payments/checkout</span>
+    </div>
+    <div class="ext-icon">M</div>
+  </div>
+  <div class="page-bg">
+    <h1>Stripe Checkout Documentation</h1>
+    <p>Learn how to integrate Stripe Checkout for secure, hosted payment pages...</p>
+
+    <div class="ext-popup">
+      <div class="popup-header">
+        <div class="icon">🔍</div>
+        <div class="title">MetaScan</div>
+        <button class="upgrade-btn">⭐ Upgrade</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active">Scan</div>
+        <div class="tab">Social</div>
+        <div class="tab">Editor</div>
+        <div class="tab">Issues</div>
+        <div class="tab">Export</div>
+        <div class="tab">⚙</div>
+      </div>
+      <div class="popup-body">
+        <div class="section-title">Core Meta Tags</div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">Title</div>
+            <div class="value truncate">Checkout | Stripe Documentation</div>
+            <div class="char-count">58 / 60 characters</div>
+          </div>
+        </div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">Description</div>
+            <div class="value truncate">Stripe Checkout is the fastest way to accept payments. Pre-built, hosted payment page with built-in support for 40+ payment methods.</div>
+            <div class="char-count">142 / 160 characters</div>
+          </div>
+        </div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">Canonical</div>
+            <div class="value">https://stripe.com/docs/payments/checkout</div>
+          </div>
+        </div>
+        <div class="meta-item warn">
+          <span class="status">⚠️</span>
+          <div class="content">
+            <div class="label">Robots</div>
+            <div class="value">index, follow, max-snippet:-1</div>
+            <div class="char-count warn">Restrictive snippet limit</div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">Open Graph</div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">og:title</div>
+            <div class="value truncate">Checkout | Stripe Documentation</div>
+          </div>
+        </div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">og:description</div>
+            <div class="value truncate">Stripe Checkout is the fastest way to accept payments...</div>
+          </div>
+        </div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">og:image</div>
+            <div class="value truncate">https://stripe.com/img/docs/checkout/og-image.png</div>
+          </div>
+        </div>
+        <div class="meta-item error">
+          <span class="status">❌</span>
+          <div class="content">
+            <div class="label">og:type</div>
+            <div class="value" style="color: #888;">Missing</div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">Twitter Cards</div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">twitter:card</div>
+            <div class="value">summary_large_image</div>
+          </div>
+        </div>
+        <div class="meta-item ok">
+          <span class="status">✅</span>
+          <div class="content">
+            <div class="label">twitter:site</div>
+            <div class="value">@stripe</div>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">Issues Found</div>
+        <div class="issues-list">
+          <span class="issue-badge error">1 Missing og:type</span>
+          <span class="issue-badge warn">1 Restrictive robots</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

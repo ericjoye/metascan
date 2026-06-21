@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0a0a0f;color:#e4e4e7;margin:0;padding:20px;width:400px}
+.header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{width:32px;height:32px;background:linear-gradient(135deg,#06b6d4,#22c55e);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000}
+.title{font-size:1.1rem;font-weight:700;color:#06b6d4}
+.summary{background:#18181b;border-radius:8px;padding:12px;margin-bottom:12px;font-size:0.85rem}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:6px}
+.summary-row:last-child{margin-bottom:0}
+.pass{color:#22c55e}.warn{color:#f59e0b}.fail{color:#ef4444}
+.table{width:100%;font-size:0.75rem;border-collapse:collapse;background:#18181b;border-radius:6px;overflow:hidden;margin-bottom:12px}
+.row{display:flex;padding:6px 12px;border-bottom:1px solid #27272a}
+.row:last-child{border-bottom:none}
+.row.header{font-weight:600;color:#06b6d4;background:#1a1a2e}
+.cell{flex:1}
+.score-circle{width:48px;height:48px;border-radius:50%;border:3px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#22c55e;margin:0 auto 8px}
+.btn{display:block;width:100%;padding:10px;margin:6px 0;border:none;border-radius:6px;background:#06b6d4;color:#000;font-weight:600;cursor:pointer;text-align:center;font-size:0.85rem}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="logo">M</div>
+<div class="title">MetaScan</div>
+</div>
+<div style="text-align:center;margin-bottom:14px">
+<div class="score-circle">82</div>
+<div style="font-size:0.85rem;color:#22c55e;font-weight:600">SEO Score: Good</div>
+</div>
+<div class="table">
+<div class="row header"><div class="cell">Meta Tag</div><div class="cell">Status</div></div>
+<div class="row"><div class="cell">title</div><div class="cell pass">✓ Present</div></div>
+<div class="row"><div class="cell">description</div><div class="cell pass">✓ Present</div></div>
+<div class="row"><div class="cell">og:image</div><div class="cell warn">⚠ Missing</div></div>
+<div class="row"><div class="cell">twitter:card</div><div class="cell pass">✓ Present</div></div>
+<div class="row"><div class="cell">canonical</div><div class="cell pass">✓ Present</div></div>
+</div>
+<button class="btn">View Full Report</button>
+</body>
+</html>

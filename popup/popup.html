@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaScan</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header">
+    <h1>MetaScan</h1>
+    <div class="header-actions">
+      <span id="tier-badge" class="badge badge-free">Free</span>
+      <button id="upgrade-btn" class="btn-upgrade" title="Upgrade to Pro">⭐ Upgrade</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="scan">Scan</button>
+    <button class="tab-btn" data-tab="editor">Editor</button>
+    <button class="tab-btn" data-tab="export">Export</button>
+    <button class="tab-btn" data-tab="social">Social</button>
+    <button class="tab-btn" data-tab="issues">Issues</button>
+    <button class="tab-btn" data-tab="options">⚙</button>
+  </nav>
+
+  <main class="content">
+    <!-- Scan Tab -->
+    <section id="tab-scan" class="tab-panel active">
+      <div class="loading" id="scan-loading">Scanning page...</div>
+      <div id="scan-results" class="hidden">
+        <div class="card">
+          <h3>Page Title</h3>
+          <p id="result-title" class="value"></p>
+          <span class="char-count"><span id="title-len">0</span>/60</span>
+        </div>
+        <div class="card">
+          <h3>Meta Description</h3>
+          <p id="result-desc" class="value"></p>
+          <span class="char-count"><span id="desc-len">0</span>/160</span>
+        </div>
+        <div class="card">
+          <h3>Open Graph Tags</h3>
+          <div id="result-og" class="tag-list"></div>
+        </div>
+        <div class="card">
+          <h3>Twitter Tags</h3>
+          <div id="result-twitter" class="tag-list"></div>
+        </div>
+        <div class="card">
+          <h3>Other Meta</h3>
+          <div id="result-meta" class="tag-list"></div>
+        </div>
+        <div class="card">
+          <h3>Canonical URL</h3>
+          <p id="result-canonical" class="value"></p>
+        </div>
+        <div class="card">
+          <h3>Robots</h3>
+          <p id="result-robots" class="value"></p>
+        </div>
+        <div class="card">
+          <h3>Headings</h3>
+          <div id="result-headings" class="heading-grid"></div>
+        </div>
+        <div class="card">
+          <h3>Images</h3>
+          <p id="result-images" class="value"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editor Tab -->
+    <section id="tab-editor" class="tab-panel">
+      <div class="card">
+        <label for="edit-title">Page Title <span class="char-count"><span id="edit-title-count">0</span>/60</span></label>
+        <input type="text" id="edit-title" maxlength="80" placeholder="Enter page title...">
+      </div>
+      <div class="card">
+        <label for="edit-desc">Meta Description <span class="char-count"><span id="edit-desc-count">0</span>/160</span></label>
+        <textarea id="edit-desc" maxlength="200" rows="3" placeholder="Enter meta description..."></textarea>
+      </div>
+      <div class="card">
+        <label for="edit-og-title">OG Title</label>
+        <input type="text" id="edit-og-title" placeholder="Open Graph title...">
+      </div>
+      <div class="card">
+        <label for="edit-og-desc">OG Description</label>
+        <textarea id="edit-og-desc" rows="2" placeholder="Open Graph description..."></textarea>
+      </div>
+      <div class="card">
+        <label for="edit-tw-title">Twitter Title</label>
+        <input type="text" id="edit-tw-title" placeholder="Twitter title...">
+      </div>
+      <div class="card">
+        <label for="edit-tw-desc">Twitter Description</label>
+        <textarea id="edit-tw-desc" rows="2" placeholder="Twitter description..."></textarea>
+      </div>
+      <div class="card">
+        <label for="edit-canonical">Canonical URL</label>
+        <input type="url" id="edit-canonical" placeholder="https://...">
+      </div>
+      <div class="actions">
+        <button id="copy-json-btn" class="btn-primary">Copy as JSON</button>
+        <button id="save-draft-btn" class="btn-secondary">Save Draft</button>
+      </div>
+      <p class="pro-gate hidden" id="pro-gate-editor">⭐ Upgrade to Pro to apply edits to your site</p>
+    </section>
+
+    <!-- Export Tab -->
+    <section id="tab-export" class="tab-panel">
+      <div class="export-grid">
+        <button class="export-card" id="export-json">
+          <span class="export-icon">{ }</span>
+          <span class="export-label">JSON Export</span>
+          <span class="export-desc">Full structured data</span>
+        </button>
+        <button class="export-card" id="export-csv">
+          <span class="export-icon">CSV</span>
+          <span class="export-label">CSV Export</span>
+          <span class="export-desc">Spreadsheet-compatible</span>
+        </button>
+        <button class="export-card" id="export-html">
+          <span class="export-icon">HTML</span>
+          <span class="export-label">HTML/PDF Report</span>
+          <span class="export-desc">Printable report (Save as PDF)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Social Preview Tab -->
+    <section id="tab-social" class="tab-panel">
+      <div class="preview-section">
+        <h3>Facebook / LinkedIn</h3>
+        <div class="social-preview" id="social-facebook">
+          <div class="social-image" id="fb-image">No OG image</div>
+          <div class="social-content">
+            <p class="social-hostname" id="fb-hostname"></p>
+            <p class="social-title" id="fb-title"></p>
+            <p class="social-desc" id="fb-desc"></p>
+          </div>
+        </div>
+      </div>
+      <div class="preview-section">
+        <h3>X / Twitter</h3>
+        <div class="social-preview twitter" id="social-twitter">
+          <div class="social-image" id="tw-image">No image</div>
+          <div class="social-content">
+            <p class="social-title" id="tw-title"></p>
+            <p class="social-desc" id="tw-desc"></p>
+            <p class="social-hostname" id="tw-hostname"></p>
+          </div>
+        </div>
+      </div>
+      <div class="preview-section">
+        <h3>WhatsApp / Slack</h3>
+        <div class="social-preview" id="social-whatsapp">
+          <div class="social-content">
+            <p class="social-title" id="wa-title"></p>
+            <p class="social-desc" id="wa-desc"></p>
+            <p class="social-hostname" id="wa-hostname"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Issues Tab -->
+    <section id="tab-issues" class="tab-panel">
+      <div class="loading" id="issues-loading">Analyzing...</div>
+      <div id="issues-list" class="issues-list hidden"></div>
+    </section>
+
+    <!-- Options Tab -->
+    <section id="tab-options" class="tab-panel">
+      <div class="card">
+        <label for="opt-tier">License Key</label>
+        <input type="text" id="opt-tier" placeholder="PRO-XXXX-XXXX">
+        <button id="activate-btn" class="btn-primary">Activate</button>
+        <p id="activate-status" class="status-text"></p>
+      </div>
+      <div class="card">
+        <label>Settings</label>
+        <div class="setting-row">
+          <span>Auto-scan on page load</span>
+          <input type="checkbox" id="opt-autoscan" checked>
+        </div>
+        <div class="setting-row">
+          <span>Show issue badge count</span>
+          <input type="checkbox" id="opt-badge" checked>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
